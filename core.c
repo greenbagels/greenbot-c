@@ -21,17 +21,14 @@ struct irc_user
          *realname;
 };
 
-
+struct irc_user *alloc_user();
+int free_user(struct irc_user *user);
 int load_config(struct irc_user*);
 int authenticate(struct irc_user*);
 
 int main()
 {
-    struct irc_user *user_config = malloc(sizeof(struct irc_user));
-    user_config->password = malloc(32); //TODO: Change to an alloc function
-    user_config->nickname = malloc(32); //TODO: Also, remember to free() :)
-    user_config->username = malloc(32);
-    user_config->realname = malloc(32);
+    struct irc_user *user_config = alloc_user();
     load_config(user_config);
     return 0;
 }
@@ -72,5 +69,26 @@ int load_config(struct irc_user* config)
         }
     }
     fclose(conf_file); //TODO: error checking for fclose (not sup important)
+    return 0;
+}
+
+struct irc_user *alloc_user()
+{
+    struct irc_user *conf = malloc(sizeof(struct irc_user));
+    conf->password = malloc(32);
+    conf->nickname = malloc(32);
+    conf->username = malloc(32);
+    conf->realname = malloc(32);
+    return conf;
+}
+
+int free_user(struct irc_user *user)
+{
+    free(user->password);
+    free(user->nickname);
+    free(user->username);
+    free(user->realname);
+    free(user);
+    user = NULL;
     return 0;
 }
